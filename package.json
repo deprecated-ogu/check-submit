@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@codestates-cc/submission-npm": "^1.1.3"
+  }
+}
