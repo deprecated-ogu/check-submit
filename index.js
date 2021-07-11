@@ -1,5 +1,5 @@
 const { requestDevice, getUser } = require('@codestates-cc/submission-npm/lib/github');
-const fs = require('fs');
+const { writeFileSync, existsSync, readFileSync } = require('fs');
 const path = require('path')
 const homedir = require('os').homedir();
 const { get } = require("axios")
@@ -11,14 +11,14 @@ const getCSVData = (jsonData) => {
 	const titles = Object.keys(arr[0]);
 	
 	titles.forEach((title, idx)=>{
-		csvData += (idx !== titles.length-1 ? `${title},` : `${title}\r\n`);
+		csvData += (idx !== titles.length - 1 ? `${title},` : `${title}\r\n`);
 	});
 	
 	arr.forEach((content, idx)=>{
 		let row = '';
-		for(let title in content)
+		for (let title in content)
 			row += (row === '' ? `${content[title]}` : `,${content[title]}`);
-		csvData += (idx !== arr.length-1 ? `${row}\r\n`: `${row}`);
+		csvData += (idx !== arr.length - 1 ? `${row}\r\n`: `${row}`);
 	});
 
 	return csvData;
@@ -37,13 +37,16 @@ const ls = async (user) => {
 
 	const uniqueResult = result.filter((el1, idx) => result.findIndex((el2) => el1.name === el2.name) === idx);
 	uniqueResult.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-	fs.writeFileSync('submitList.csv', getCSVData(uniqueResult)); 
+	
+	writeFileSync('submitList.csv', getCSVData(uniqueResult)); 
+	console.log("Timestamp based on initial submission date.");
+	console.log(`You can check "${__dirname}/submitList.csv"`);
 }
 
 const main = () => {
   const location = path.join(homedir, '.codestates-token')
-  if (fs.existsSync(location)) {
-    const token = fs.readFileSync(location).toString()
+  if (existsSync(location)) {
+    const token = readFileSync(location).toString()
     getUser(token.split('\n')[0], ({ data }) => {
       ls(data.id);
     })
