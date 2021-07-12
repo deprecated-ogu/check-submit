@@ -1,8 +1,8 @@
 const { requestDevice, getUser } = require('@codestates-cc/submission-npm/lib/github');
 const { writeFileSync, existsSync, readFileSync } = require('fs');
-const path = require('path')
-const homedir = require('os').homedir();
-const { get } = require("axios")
+const { join } = require('path');
+const { homedir } = require('os');
+const { get } = require('axios')
 const ENDPOINT = 'https://2j12cf7y29.execute-api.ap-northeast-2.amazonaws.com/dev/sprint/ls';
 
 const getCSVData = (jsonData) => {
@@ -39,12 +39,12 @@ const ls = async (user) => {
 	uniqueResult.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 	
 	writeFileSync('submitList.csv', getCSVData(uniqueResult)); 
-	console.log("Timestamp based on initial submission date.");
+	console.log(`Timestamp based on initial submission date.`);
 	console.log(`You can check "${__dirname}/submitList.csv"`);
 }
 
 const main = () => {
-  const location = path.join(homedir, '.codestates-token')
+  const location = join(homedir(), '.codestates-token')
   if (existsSync(location)) {
     const token = readFileSync(location).toString()
     getUser(token.split('\n')[0], ({ data }) => {
